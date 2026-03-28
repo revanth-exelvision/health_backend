@@ -1,0 +1,1 @@
+"""Health backend application package."""
