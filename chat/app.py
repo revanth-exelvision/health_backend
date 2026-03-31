@@ -11,6 +11,7 @@ Run this app (from repo root):
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -44,9 +45,10 @@ st.title("Health orchestrator")
 
 with st.sidebar:
     st.subheader("API")
+    default_api = os.environ.get("ORCHESTRATOR_BASE_URL", "http://127.0.0.1:8000")
     base_url = st.text_input(
         "Base URL",
-        value=st.session_state.get("api_base", "http://127.0.0.1:8000"),
+        value=st.session_state.get("api_base", default_api),
         help="Orchestrator FastAPI base URL (no trailing slash).",
     )
     st.session_state["api_base"] = base_url

@@ -1,0 +1,27 @@
+# Git and local env
+.git
+.gitignore
+.env
+.env.*
+
+# Python
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*$py.class
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Not needed in API or chat images
+tests
+*.md
+!README.md
+
+# Optional: keep compose edits from bloating context (Dockerfile is not sent via context)
+docker-compose*.yml

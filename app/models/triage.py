@@ -37,6 +37,10 @@ class RankedCondition(BaseModel):
     condition: str
     score: float
     matched_symptoms: list[str] = Field(default_factory=list)
+    matched_risks: list[str] = Field(
+        default_factory=list,
+        description="Risk-factor KB rows matched to patient text (non-negated)",
+    )
     missing_required: list[str] = Field(default_factory=list)
 
 

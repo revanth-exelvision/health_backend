@@ -1,0 +1,192 @@
+{
+  "conditions": [
+    {
+      "name": "Preeclampsia",
+      "symptoms": [
+        {
+          "name": "Epigastric Pain",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": ["heartburn"]
+        },
+        {
+          "name": "Scotoma",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": ["sparkles", "stars"]
+        },
+        {
+          "name": "Peripheral Edema",
+          "weight": 0.5,
+          "required": false,
+          "descriptions": ["tight rings", "tight shoes"]
+        },
+        {
+          "name": "Visual Disturbance",
+          "weight": 0.8,
+          "required": false,
+          "descriptions": ["vision changes"]
+        },
+        {
+          "name": "Severe Headache",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": ["headache won't go away"]
+        }
+      ]
+    },
+    {
+      "name": "High Blood Pressure",
+      "symptoms": [
+        {
+          "name": "Hypertension",
+          "weight": 0.9,
+          "required": true,
+          "descriptions": ["blood pressure high"]
+        }
+      ]
+    },
+    {
+      "name": "Gestational Diabetes",
+      "symptoms": [
+        {
+          "name": "Hyperglycemia",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": ["sugar is high"]
+        },
+        {
+          "name": "Excessive Thirst",
+          "weight": 0.45,
+          "required": false,
+          "descriptions": ["always thirsty"]
+        },
+        {
+          "name": "Polyuria",
+          "weight": 0.45,
+          "required": false,
+          "descriptions": ["peeing constantly"]
+        }
+      ]
+    },
+    {
+      "name": "Infections",
+      "symptoms": [
+        {
+          "name": "Dysuria",
+          "weight": 0.65,
+          "required": false,
+          "descriptions": ["burning when i pee"]
+        },
+        {
+          "name": "Maternal Fever",
+          "weight": 0.7,
+          "required": false,
+          "descriptions": ["fever"]
+        }
+      ]
+    },
+    {
+      "name": "Preterm Labor",
+      "symptoms": [
+        {
+          "name": "Premature Contractions",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": ["contractions"]
+        },
+        {
+          "name": "Pelvic Cramping",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": ["cramping real bad"]
+        },
+        {
+          "name": "Premature Rupture of Membranes",
+          "weight": 0.95,
+          "required": false,
+          "descriptions": ["water broke early"]
+        }
+      ]
+    },
+    {
+      "name": "Depression & Anxiety",
+      "symptoms": [
+        {
+          "name": "Depressed Mood",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": ["feeling super sad"]
+        },
+        {
+          "name": "Severe Anxiety",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": ["can't stop worrying"]
+        }
+      ]
+    },
+    {
+      "name": "Pregnancy Loss/Miscarriage",
+      "symptoms": [
+        {
+          "name": "Vaginal Bleeding",
+          "weight": 0.8,
+          "required": true,
+          "descriptions": ["bleeding"]
+        }
+      ]
+    },
+    {
+      "name": "Stillbirth",
+      "symptoms": [
+        {
+          "name": "Decreased Fetal Movement",
+          "weight": 0.9,
+          "required": true,
+          "descriptions": ["baby not moving"]
+        }
+      ]
+    },
+    {
+      "name": "Hyperemesis Gravidarum",
+      "symptoms": [
+        {
+          "name": "Severe Nausea/Vomiting",
+          "weight": 0.85,
+          "required": true,
+          "descriptions": ["puking constantly", "can't keep food down"]
+        },
+        {
+          "name": "Dehydration/Faintness",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": ["so dizzy"]
+        }
+      ]
+    },
+    {
+      "name": "Iron-deficiency Anemia",
+      "symptoms": [
+        {
+          "name": "Fatigue",
+          "weight": 0.4,
+          "required": false,
+          "descriptions": ["always tired"]
+        },
+        {
+          "name": "Pallor",
+          "weight": 0.5,
+          "required": false,
+          "descriptions": ["look pale"]
+        },
+        {
+          "name": "Shortness of Breath",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": ["short of breath"]
+        }
+      ]
+    }
+  ]
+}

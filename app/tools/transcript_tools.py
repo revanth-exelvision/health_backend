@@ -3,27 +3,18 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Any
 
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.models.transcript import TranscriptSymptomAnalysis
+from app.services.triage_logic import knowledge_path
 from orchestrator.llm.factory import get_chat_model
 
 
-def _knowledge_path() -> Path:
-    return (
-        Path(__file__).resolve().parent.parent
-        / "data"
-        / "knowledge"
-        / "medical_conditions_simplified.json"
-    )
-
-
 def _load_symptom_catalog_text() -> str:
-    path = _knowledge_path()
+    path = knowledge_path()
     if not path.is_file():
         return "(no knowledge file)"
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -43,6 +34,8 @@ nurse intake, vitals, labs/tests, medications, allergies, pregnancy-related stat
 
 Symptom catalog — use these labels when they fit so names stay consistent with the knowledge base:
 {symptom_catalog}
+
+Risk factors (e.g. first pregnancy, twins, prior preeclampsia) may appear in the narrative; map them to catalog **symptom** names when the same idea is listed as a symptom, otherwise capture them in unstructured_bullets or free_text_other so triage can match **risk** rows in the KB.
 
 Populate the schema as follows:
 - chief_complaint: main reason for contact in one short line.
@@ -69,7 +62,7 @@ def analyze_transcript_symptoms(transcript: str) -> str:
     """Analyze a clinical transcript and return structured JSON (symptoms, vitals, tests, meds, overflow).
 
     Uses the configured chat model with structured output. Symptom names are aligned to the local
-    medical_conditions_simplified catalog when possible. Vitals and test values are captured as stated,
+    the active knowledge catalog (triage or simplified) when possible. Vitals and test values are captured as stated,
     without adding clinical interpretation. Content that does not fit typed fields goes to
     unstructured_bullets or free_text_other.
 

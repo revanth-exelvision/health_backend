@@ -1,0 +1,788 @@
+{
+  "schema_version": 1,
+  "icd10_fiscal_year": "2026",
+  "conditions": [
+    {
+      "name": "Preeclampsia",
+      "symptoms": [
+        {
+          "name": "Epigastric Pain",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": [
+            "heartburn"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R10.13",
+              "role": "associated",
+              "short_description": "Epigastric pain",
+              "long_description": "Epigastric pain"
+            }
+          ]
+        },
+        {
+          "name": "Scotoma",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": [
+            "sparkles",
+            "stars"
+          ],
+          "icd10_cm": [
+            {
+              "code": "H53.8",
+              "role": "associated",
+              "short_description": "Other visual disturbances",
+              "long_description": "Other visual disturbances"
+            }
+          ]
+        },
+        {
+          "name": "Peripheral Edema",
+          "weight": 0.5,
+          "required": false,
+          "descriptions": [
+            "tight rings",
+            "tight shoes"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R60.0",
+              "role": "associated",
+              "short_description": "Localized edema",
+              "long_description": "Localized edema"
+            }
+          ]
+        },
+        {
+          "name": "Visual Disturbance",
+          "weight": 0.8,
+          "required": false,
+          "descriptions": [
+            "vision changes"
+          ],
+          "icd10_cm": [
+            {
+              "code": "H53.9",
+              "role": "associated",
+              "short_description": "Unspecified visual disturbance",
+              "long_description": "Unspecified visual disturbance"
+            }
+          ]
+        },
+        {
+          "name": "Severe Headache",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": [
+            "headache won't go away"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R51.9",
+              "role": "associated",
+              "short_description": "Headache, unspecified",
+              "long_description": "Headache, unspecified"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O14.9",
+          "role": "primary",
+          "short_description": "Unspecified pre-eclampsia",
+          "long_description": "Unspecified pre-eclampsia"
+        }
+      ],
+      "risks": [
+        {
+          "name": "First pregnancy",
+          "weight": 0.12,
+          "descriptions": [
+            "first pregnancy",
+            "first baby",
+            "never been pregnant before"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Prior preeclampsia",
+          "weight": 0.14,
+          "descriptions": [
+            "had preeclampsia before",
+            "previous preeclampsia"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O14.9",
+              "role": "monitoring",
+              "short_description": "Unspecified pre-eclampsia",
+              "long_description": "Unspecified pre-eclampsia"
+            }
+          ]
+        },
+        {
+          "name": "Chronic hypertension or diabetes or kidney disease or lupus",
+          "weight": 0.12,
+          "descriptions": [
+            "high blood pressure before pregnancy",
+            "diabetes",
+            "kidney disease",
+            "lupus"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Age 35 or older",
+          "weight": 0.1,
+          "descriptions": [
+            "older mom",
+            "35 or older",
+            "advanced maternal age"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Multiple gestation",
+          "weight": 0.12,
+          "descriptions": [
+            "twins",
+            "triplets",
+            "more than one baby"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O30.9",
+              "role": "monitoring",
+              "short_description": "Multiple gestation, unspecified",
+              "long_description": "Multiple gestation, unspecified"
+            }
+          ]
+        },
+        {
+          "name": "Obesity",
+          "weight": 0.1,
+          "descriptions": [
+            "obese",
+            "high bmi",
+            "overweight"
+          ],
+          "icd10_cm": [
+            {
+              "code": "E66.9",
+              "role": "associated",
+              "short_description": "Obesity, unspecified",
+              "long_description": "Obesity, unspecified"
+            }
+          ]
+        },
+        {
+          "name": "First pregnancies",
+          "weight": 0.1,
+          "descriptions": [
+            "first pregnancies"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Preeclampsia in a previous pregnancy",
+          "weight": 0.1,
+          "descriptions": [
+            "preeclampsia in a previous pregnancy"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Existing conditions such as high blood pressure, diabetes, kidney disease, and systemic lupus erythematosus",
+          "weight": 0.1,
+          "descriptions": [
+            "existing conditions such as high blood pressure, diabetes, kidney disease, and systemic lupus erythematosus"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Being 35 years of age or older",
+          "weight": 0.1,
+          "descriptions": [
+            "being 35 years of age or older"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Carrying two or more fetuses",
+          "weight": 0.1,
+          "descriptions": [
+            "carrying two or more fetuses"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "High Blood Pressure",
+      "symptoms": [
+        {
+          "name": "Hypertension",
+          "weight": 0.9,
+          "required": true,
+          "descriptions": [
+            "blood pressure high"
+          ],
+          "icd10_cm": [
+            {
+              "code": "I10",
+              "role": "associated",
+              "short_description": "Essential (primary) hypertension",
+              "long_description": "Essential (primary) hypertension"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O13.9",
+          "role": "primary",
+          "short_description": "Gestational htn w/o significant proteinuria, unsp trimester",
+          "long_description": "Gestational [pregnancy-induced] hypertension without significant proteinuria, unspecified trimester"
+        },
+        {
+          "code": "O10.9",
+          "role": "associated",
+          "short_description": "Unsp pre-existing hypertension compl preg/chldbrth",
+          "long_description": "Unspecified pre-existing hypertension complicating pregnancy, childbirth and the puerperium"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Pre-existing hypertension",
+          "weight": 0.12,
+          "descriptions": [
+            "chronic hypertension",
+            "had high bp before pregnancy"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "First pregnancy or prior hypertensive disorders",
+          "weight": 0.1,
+          "descriptions": [
+            "first pregnancy",
+            "preeclampsia before"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Gestational Diabetes",
+      "symptoms": [
+        {
+          "name": "Hyperglycemia",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": [
+            "sugar is high"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R73.9",
+              "role": "associated",
+              "short_description": "Hyperglycemia, unspecified",
+              "long_description": "Hyperglycemia, unspecified"
+            }
+          ]
+        },
+        {
+          "name": "Excessive Thirst",
+          "weight": 0.45,
+          "required": false,
+          "descriptions": [
+            "always thirsty"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R63.1",
+              "role": "associated",
+              "short_description": "Polydipsia",
+              "long_description": "Polydipsia"
+            }
+          ]
+        },
+        {
+          "name": "Polyuria",
+          "weight": 0.45,
+          "required": false,
+          "descriptions": [
+            "peeing constantly"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R35.0",
+              "role": "associated",
+              "short_description": "Frequency of micturition",
+              "long_description": "Frequency of micturition"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O24.4",
+          "role": "primary",
+          "short_description": "Gestational diabetes mellitus",
+          "long_description": "Gestational diabetes mellitus"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Prior gestational diabetes",
+          "weight": 0.12,
+          "descriptions": [
+            "gestational diabetes last time",
+            "had gdm before"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Polycystic ovary syndrome or obesity",
+          "weight": 0.1,
+          "descriptions": [
+            "pcos",
+            "obese",
+            "overweight"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Family history of diabetes",
+          "weight": 0.08,
+          "descriptions": [
+            "diabetes runs in family",
+            "family history diabetes"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Infections",
+      "symptoms": [
+        {
+          "name": "Dysuria",
+          "weight": 0.65,
+          "required": false,
+          "descriptions": [
+            "burning when i pee"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R30.0",
+              "role": "associated",
+              "short_description": "Dysuria",
+              "long_description": "Dysuria"
+            }
+          ]
+        },
+        {
+          "name": "Maternal Fever",
+          "weight": 0.7,
+          "required": false,
+          "descriptions": [
+            "fever"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R50.9",
+              "role": "associated",
+              "short_description": "Fever, unspecified",
+              "long_description": "Fever, unspecified"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O98.9",
+          "role": "primary",
+          "short_description": "Unsp maternal infec/parastc disease compl preg/chldbrth",
+          "long_description": "Unspecified maternal infectious and parasitic disease complicating pregnancy, childbirth and the puerperium"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Untreated STI or urinary infection",
+          "weight": 0.12,
+          "descriptions": [
+            "sti",
+            "std",
+            "uti not treated"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Preterm Labor",
+      "symptoms": [
+        {
+          "name": "Premature Contractions",
+          "weight": 0.85,
+          "required": false,
+          "descriptions": [
+            "contractions"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O47.1",
+              "role": "associated",
+              "short_description": "False labor at or after 37 completed weeks of gestation",
+              "long_description": "False labor at or after 37 completed weeks of gestation"
+            }
+          ]
+        },
+        {
+          "name": "Pelvic Cramping",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": [
+            "cramping real bad"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O60.0",
+              "role": "associated",
+              "short_description": "Preterm labor without delivery",
+              "long_description": "Preterm labor without delivery"
+            }
+          ]
+        },
+        {
+          "name": "Premature Rupture of Membranes",
+          "weight": 0.95,
+          "required": false,
+          "descriptions": [
+            "water broke early"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O42.9",
+              "role": "associated",
+              "short_description": "Premature ROM, unsp time betw rupture and onset of labor",
+              "long_description": "Premature rupture of membranes, unspecified as to length of time between rupture and onset of labor"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O60.14",
+          "role": "primary",
+          "short_description": "Preterm labor third tri w preterm delivery third trimester",
+          "long_description": "Preterm labor third trimester with preterm delivery third trimester"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Prior preterm birth",
+          "weight": 0.14,
+          "descriptions": [
+            "early birth before",
+            "last baby came early",
+            "prior preterm"
+          ],
+          "icd10_cm": []
+        },
+        {
+          "name": "Shortened cervix or infection",
+          "weight": 0.1,
+          "descriptions": [
+            "short cervix",
+            "infection"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Depression & Anxiety",
+      "symptoms": [
+        {
+          "name": "Depressed Mood",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": [
+            "feeling super sad"
+          ],
+          "icd10_cm": [
+            {
+              "code": "F32.A",
+              "role": "associated",
+              "short_description": "Depression, unspecified",
+              "long_description": "Depression, unspecified"
+            }
+          ]
+        },
+        {
+          "name": "Severe Anxiety",
+          "weight": 0.75,
+          "required": false,
+          "descriptions": [
+            "can't stop worrying"
+          ],
+          "icd10_cm": [
+            {
+              "code": "F41.9",
+              "role": "associated",
+              "short_description": "Anxiety disorder, unspecified",
+              "long_description": "Anxiety disorder, unspecified"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O99.34",
+          "role": "primary",
+          "short_description": "Oth mental disorders comp pregnancy, chldbrth, and the puerp Other mental disorders complicating pregnancy, childbirth, and the puerperium",
+          "long_description": "Oth mental disorders comp pregnancy, chldbrth, and the puerp Other mental disorders complicating pregnancy, childbirth, and the puerperium"
+        },
+        {
+          "code": "F53.0",
+          "role": "associated",
+          "short_description": "Postpartum depression",
+          "long_description": "Postpartum depression"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Prior perinatal mood disorder",
+          "weight": 0.12,
+          "descriptions": [
+            "postpartum depression before",
+            "depression during last pregnancy"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Pregnancy Loss/Miscarriage",
+      "symptoms": [
+        {
+          "name": "Vaginal Bleeding",
+          "weight": 0.8,
+          "required": true,
+          "descriptions": [
+            "bleeding"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O20.9",
+              "role": "associated",
+              "short_description": "Hemorrhage in early pregnancy, unspecified",
+              "long_description": "Hemorrhage in early pregnancy, unspecified"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O03.9",
+          "role": "primary",
+          "short_description": "Complete or unsp spontaneous abortion without complication",
+          "long_description": "Complete or unspecified spontaneous abortion without complication"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Prior pregnancy loss",
+          "weight": 0.1,
+          "descriptions": [
+            "miscarriage before",
+            "prior loss"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Stillbirth",
+      "symptoms": [
+        {
+          "name": "Decreased Fetal Movement",
+          "weight": 0.9,
+          "required": true,
+          "descriptions": [
+            "baby not moving"
+          ],
+          "icd10_cm": [
+            {
+              "code": "O36.8",
+              "role": "associated",
+              "short_description": "Maternal care for other specified fetal problems",
+              "long_description": "Maternal care for other specified fetal problems"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "P95",
+          "role": "primary",
+          "short_description": "Stillbirth",
+          "long_description": "Stillbirth"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Placental problems or poor fetal growth or maternal chronic illness",
+          "weight": 0.1,
+          "descriptions": [
+            "placenta problems",
+            "baby small",
+            "growth restriction"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Hyperemesis Gravidarum",
+      "symptoms": [
+        {
+          "name": "Severe Nausea/Vomiting",
+          "weight": 0.85,
+          "required": true,
+          "descriptions": [
+            "puking constantly",
+            "can't keep food down"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R11.2",
+              "role": "associated",
+              "short_description": "Nausea with vomiting, unspecified",
+              "long_description": "Nausea with vomiting, unspecified"
+            }
+          ]
+        },
+        {
+          "name": "Dehydration/Faintness",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": [
+            "so dizzy"
+          ],
+          "icd10_cm": [
+            {
+              "code": "E86.0",
+              "role": "associated",
+              "short_description": "Dehydration",
+              "long_description": "Dehydration"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O21.1",
+          "role": "primary",
+          "short_description": "Hyperemesis gravidarum with metabolic disturbance",
+          "long_description": "Hyperemesis gravidarum with metabolic disturbance"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Multiple gestation or molar pregnancy history",
+          "weight": 0.08,
+          "descriptions": [
+            "twins",
+            "triplets"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    },
+    {
+      "name": "Iron-deficiency Anemia",
+      "symptoms": [
+        {
+          "name": "Fatigue",
+          "weight": 0.4,
+          "required": false,
+          "descriptions": [
+            "always tired"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R53.83",
+              "role": "associated",
+              "short_description": "Other fatigue",
+              "long_description": "Other fatigue"
+            }
+          ]
+        },
+        {
+          "name": "Pallor",
+          "weight": 0.5,
+          "required": false,
+          "descriptions": [
+            "look pale"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R23.1",
+              "role": "associated",
+              "short_description": "Pallor",
+              "long_description": "Pallor"
+            }
+          ]
+        },
+        {
+          "name": "Shortness of Breath",
+          "weight": 0.55,
+          "required": false,
+          "descriptions": [
+            "short of breath"
+          ],
+          "icd10_cm": [
+            {
+              "code": "R06.02",
+              "role": "associated",
+              "short_description": "Shortness of breath",
+              "long_description": "Shortness of breath"
+            }
+          ]
+        }
+      ],
+      "icd10_cm": [
+        {
+          "code": "O99.019",
+          "role": "primary",
+          "short_description": "Anemia complicating pregnancy, unspecified trimester",
+          "long_description": "Anemia complicating pregnancy, unspecified trimester"
+        },
+        {
+          "code": "D50.9",
+          "role": "associated",
+          "short_description": "Iron deficiency anemia, unspecified",
+          "long_description": "Iron deficiency anemia, unspecified"
+        }
+      ],
+      "risks": [
+        {
+          "name": "Inadequate iron intake or prior anemia",
+          "weight": 0.1,
+          "descriptions": [
+            "vegetarian",
+            "low iron",
+            "anemia before"
+          ],
+          "icd10_cm": []
+        }
+      ]
+    }
+  ]
+}

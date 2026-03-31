@@ -1,0 +1,152 @@
+{
+  "Preeclampsia": {
+    "en-IN": {
+      "heartburn": "Epigastric Pain",
+      "sparkles": "Scotoma",
+      "stars": "Scotoma",
+      "tight rings": "Peripheral Edema",
+      "tight shoes": "Peripheral Edema",
+      "vision changes": "Visual Disturbance",
+      "headache won't go away": "Severe Headache"
+    },
+    "hi-IN": {
+      "सीने में जलन": "Epigastric Pain",
+      "आंखों के सामने तारे": "Scotoma",
+      "सूजन": "Peripheral Edema",
+      "धुंधला दिखना": "Visual Disturbance",
+      "सिर दर्द": "Severe Headache"
+    },
+    "mr-IN": {
+      "छाती जळजळ": "Epigastric Pain",
+      "डोळ्यांसमोर अंधारी": "Scotoma",
+      "हातापायाला सूज": "Peripheral Edema",
+      "अंधुक दिसणे": "Visual Disturbance",
+      "भयंकर डोकेदुखी": "Severe Headache"
+    }
+  },
+  "High Blood Pressure": {
+    "en-IN": {
+      "blood pressure high": "Hypertension"
+    },
+    "hi-IN": {
+      "ब्लड प्रेशर ज्यादा": "Hypertension"
+    },
+    "mr-IN": {
+      "बीपी जास्त": "Hypertension"
+    }
+  },
+  "Gestational Diabetes": {
+    "en-IN": {
+      "sugar is high": "Hyperglycemia",
+      "always thirsty": "Excessive Thirst",
+      "peeing constantly": "Polyuria"
+    },
+    "hi-IN": {
+      "शुगर ज्यादा": "Hyperglycemia",
+      "बहुत प्यास": "Excessive Thirst",
+      "बार बार पेशाब": "Polyuria"
+    },
+    "mr-IN": {
+      "साखर वाढली": "Hyperglycemia",
+      "खूप तहान": "Excessive Thirst",
+      "वारंवार लघवी": "Polyuria"
+    }
+  },
+  "Infections": {
+    "en-IN": {
+      "burning when i pee": "Dysuria",
+      "fever": "Maternal Fever"
+    },
+    "hi-IN": {
+      "पेशाब में जलन": "Dysuria",
+      "बुखार": "Maternal Fever"
+    },
+    "mr-IN": {
+      "लघवीला जळजळ": "Dysuria",
+      "ताप": "Maternal Fever"
+    }
+  },
+  "Preterm Labor": {
+    "en-IN": {
+      "contractions": "Premature Contractions",
+      "cramping real bad": "Pelvic Cramping",
+      "water broke early": "Premature Rupture of Membranes"
+    },
+    "hi-IN": {
+      "पेट में दर्द": "Pelvic Cramping",
+      "पानी छूट गया": "Premature Rupture of Membranes"
+    },
+    "mr-IN": {
+      "पोटात कळा": "Pelvic Cramping",
+      "पाणी गेले": "Premature Rupture of Membranes"
+    }
+  },
+  "Depression & Anxiety": {
+    "en-IN": {
+      "feeling super sad": "Depressed Mood",
+      "can't stop worrying": "Severe Anxiety"
+    },
+    "hi-IN": {
+      "बहुत उदास": "Depressed Mood",
+      "घबराहट": "Severe Anxiety"
+    },
+    "mr-IN": {
+      "खूप उदास": "Depressed Mood",
+      "खूप भीती": "Severe Anxiety"
+    }
+  },
+  "Pregnancy Loss/Miscarriage": {
+    "en-IN": {
+      "bleeding": "Vaginal Bleeding"
+    },
+    "hi-IN": {
+      "खून बह रहा है": "Vaginal Bleeding"
+    },
+    "mr-IN": {
+      "रक्तस्राव": "Vaginal Bleeding"
+    }
+  },
+  "Stillbirth": {
+    "en-IN": {
+      "baby not moving": "Decreased Fetal Movement"
+    },
+    "hi-IN": {
+      "बच्चा हिल नहीं रहा": "Decreased Fetal Movement"
+    },
+    "mr-IN": {
+      "बाळ हलत नाही": "Decreased Fetal Movement"
+    }
+  },
+  "Hyperemesis Gravidarum": {
+    "en-IN": {
+      "puking constantly": "Severe Nausea/Vomiting",
+      "can't keep food down": "Severe Nausea/Vomiting",
+      "so dizzy": "Dehydration/Faintness"
+    },
+    "hi-IN": {
+      "लगातार उल्टी": "Severe Nausea/Vomiting",
+      "चक्कर आना": "Dehydration/Faintness"
+    },
+    "mr-IN": {
+      "सतत उलट्या": "Severe Nausea/Vomiting",
+      "चक्कर येणे": "Dehydration/Faintness"
+    }
+  },
+  "Iron-deficiency Anemia": {
+    "en-IN": {
+      "always tired": "Fatigue",
+      "look pale": "Pallor",
+      "short of breath": "Shortness of Breath"
+    },
+    "hi-IN": {
+      "हर समय थकान": "Fatigue",
+      "पीला पड़ना": "Pallor",
+      "सांस लेने में तकलीफ": "Shortness of Breath"
+    },
+    "mr-IN": {
+      "सतत थकवा": "Fatigue",
+      "रक्त कमी": "Pallor",
+      "धाप लागणे": "Shortness of Breath"
+    }
+  }
+}

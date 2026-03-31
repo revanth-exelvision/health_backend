@@ -1,0 +1,323 @@
+{
+  "schema_version": 3,
+  "icd10_fiscal_year": "2026",
+  "source": "medical_conditions_triage.json",
+  "description": "Risk factors inferable from patient history or session context when loading user_session; not acute symptoms. Consolidated from medical_conditions_triage.json risks[] (no weights here). Schema v3: each risk has conditions[] (triage condition names that include this risk). Rows with the same risk name, descriptions set, and icd10_cm are merged; id is slug(name) plus the first 8 hex chars of SHA-256(name, sorted(history_cues), icd10_cm).",
+  "risks": [
+    {
+      "id": "age_35_or_older__607900ed",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Age 35 or older",
+      "history_cues": [
+        "35 or older",
+        "advanced maternal age",
+        "older mom"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "being_35_years_of_age_or_older__df701d43",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Being 35 years of age or older",
+      "history_cues": [
+        "being 35 years of age or older"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "carrying_two_or_more_fetuses__78f59a38",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Carrying two or more fetuses",
+      "history_cues": [
+        "carrying two or more fetuses"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "chronic_hypertension_or_diabetes_or_kidney_disease_or_lupus__ea32b36d",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Chronic hypertension or diabetes or kidney disease or lupus",
+      "history_cues": [
+        "diabetes",
+        "high blood pressure before pregnancy",
+        "kidney disease",
+        "lupus"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "existing_conditions_such_as_high_blood_pressure_diabetes_kidney_disease_and_systemic_lupus_erythematosus__b347d3ed",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Existing conditions such as high blood pressure, diabetes, kidney disease, and systemic lupus erythematosus",
+      "history_cues": [
+        "existing conditions such as high blood pressure, diabetes, kidney disease, and systemic lupus erythematosus"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "family_history_of_diabetes__f88c907a",
+      "conditions": [
+        "Gestational Diabetes"
+      ],
+      "name": "Family history of diabetes",
+      "history_cues": [
+        "diabetes runs in family",
+        "family history diabetes"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "first_pregnancies__bde577f3",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "First pregnancies",
+      "history_cues": [
+        "first pregnancies"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "first_pregnancy__ba5c1e1d",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "First pregnancy",
+      "history_cues": [
+        "first baby",
+        "first pregnancy",
+        "never been pregnant before"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "first_pregnancy_or_prior_hypertensive_disorders__c3add54f",
+      "conditions": [
+        "High Blood Pressure"
+      ],
+      "name": "First pregnancy or prior hypertensive disorders",
+      "history_cues": [
+        "first pregnancy",
+        "preeclampsia before"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "inadequate_iron_intake_or_prior_anemia__f866e291",
+      "conditions": [
+        "Iron-deficiency Anemia"
+      ],
+      "name": "Inadequate iron intake or prior anemia",
+      "history_cues": [
+        "anemia before",
+        "low iron",
+        "vegetarian"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "multiple_gestation__f076c507",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Multiple gestation",
+      "history_cues": [
+        "more than one baby",
+        "triplets",
+        "twins"
+      ],
+      "icd10_cm": [
+        {
+          "code": "O30.9",
+          "long_description": "Multiple gestation, unspecified",
+          "role": "monitoring",
+          "short_description": "Multiple gestation, unspecified"
+        }
+      ]
+    },
+    {
+      "id": "multiple_gestation_or_molar_pregnancy_history__5020b5a4",
+      "conditions": [
+        "Hyperemesis Gravidarum"
+      ],
+      "name": "Multiple gestation or molar pregnancy history",
+      "history_cues": [
+        "triplets",
+        "twins"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "obesity__f489bb18",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Obesity",
+      "history_cues": [
+        "high bmi",
+        "obese",
+        "overweight"
+      ],
+      "icd10_cm": [
+        {
+          "code": "E66.9",
+          "long_description": "Obesity, unspecified",
+          "role": "associated",
+          "short_description": "Obesity, unspecified"
+        }
+      ]
+    },
+    {
+      "id": "placental_problems_or_poor_fetal_growth_or_maternal_chronic_illness__5d38ebf4",
+      "conditions": [
+        "Stillbirth"
+      ],
+      "name": "Placental problems or poor fetal growth or maternal chronic illness",
+      "history_cues": [
+        "baby small",
+        "growth restriction",
+        "placenta problems"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "polycystic_ovary_syndrome_or_obesity__5dfdd39a",
+      "conditions": [
+        "Gestational Diabetes"
+      ],
+      "name": "Polycystic ovary syndrome or obesity",
+      "history_cues": [
+        "obese",
+        "overweight",
+        "pcos"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "pre_existing_hypertension__f752daeb",
+      "conditions": [
+        "High Blood Pressure"
+      ],
+      "name": "Pre-existing hypertension",
+      "history_cues": [
+        "chronic hypertension",
+        "had high bp before pregnancy"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "preeclampsia_in_a_previous_pregnancy__febd7137",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Preeclampsia in a previous pregnancy",
+      "history_cues": [
+        "preeclampsia in a previous pregnancy"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "prior_gestational_diabetes__4aed6e4f",
+      "conditions": [
+        "Gestational Diabetes"
+      ],
+      "name": "Prior gestational diabetes",
+      "history_cues": [
+        "gestational diabetes last time",
+        "had gdm before"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "prior_perinatal_mood_disorder__caa7c00b",
+      "conditions": [
+        "Depression & Anxiety"
+      ],
+      "name": "Prior perinatal mood disorder",
+      "history_cues": [
+        "depression during last pregnancy",
+        "postpartum depression before"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "prior_preeclampsia__10d30106",
+      "conditions": [
+        "Preeclampsia"
+      ],
+      "name": "Prior preeclampsia",
+      "history_cues": [
+        "had preeclampsia before",
+        "previous preeclampsia"
+      ],
+      "icd10_cm": [
+        {
+          "code": "O14.9",
+          "long_description": "Unspecified pre-eclampsia",
+          "role": "monitoring",
+          "short_description": "Unspecified pre-eclampsia"
+        }
+      ]
+    },
+    {
+      "id": "prior_pregnancy_loss__919a2886",
+      "conditions": [
+        "Pregnancy Loss/Miscarriage"
+      ],
+      "name": "Prior pregnancy loss",
+      "history_cues": [
+        "miscarriage before",
+        "prior loss"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "prior_preterm_birth__7d609d92",
+      "conditions": [
+        "Preterm Labor"
+      ],
+      "name": "Prior preterm birth",
+      "history_cues": [
+        "early birth before",
+        "last baby came early",
+        "prior preterm"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "shortened_cervix_or_infection__e69c1462",
+      "conditions": [
+        "Preterm Labor"
+      ],
+      "name": "Shortened cervix or infection",
+      "history_cues": [
+        "infection",
+        "short cervix"
+      ],
+      "icd10_cm": []
+    },
+    {
+      "id": "untreated_sti_or_urinary_infection__19067c9f",
+      "conditions": [
+        "Infections"
+      ],
+      "name": "Untreated STI or urinary infection",
+      "history_cues": [
+        "std",
+        "sti",
+        "uti not treated"
+      ],
+      "icd10_cm": []
+    }
+  ]
+}

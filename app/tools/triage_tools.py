@@ -8,6 +8,12 @@ from typing import Any
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from app.models.patient_state import (
+    ActiveConditionItem,
+    PatientHistory,
+    PatientMetadata,
+    PatientState,
+)
 from app.models.triage import (
     ConditionRankingResult,
     PerConditionPlansBundle,
@@ -15,7 +21,15 @@ from app.models.triage import (
     TriageConsolidation,
     TriageSymptomLog,
 )
+from app.services.patient_info import get_patient_info_source
+from app.services.risk_signals import (
+    build_patient_match_lines,
+    build_patient_search_text,
+    match_patient_risk_signals,
+    search_text_preview,
+)
 from app.services.triage_logic import (
+    active_clinical_from_history_analyses,
     fetch_symptom_analyses_for_rchid,
     format_kb_condition_block,
     load_conditions_kb,
@@ -26,11 +40,11 @@ from orchestrator.llm.factory import get_chat_model
 
 _PLAN_SYSTEM = """You are a clinical decision-support assistant for obstetric triage. You are not a diagnosing physician.
 
-The knowledge block below lists ONLY the symptoms defined for this single condition in the local knowledge base (names, weights, required flag, example phrases). Use it as the source of truth for what belongs to this condition.
+The knowledge block below lists symptoms, risk factors, and ICD-10-CM references for this single condition in the local knowledge base. Use it as the source of truth for what belongs to this condition.
 
 Your tasks for THIS condition only:
 1. questions — Short, actionable clarifying questions a nurse could ask next.
-2. red_flags — KB-grounded symptoms/findings that, if present, STRONGLY support or would effectively confirm this condition for triage purposes. Prioritize symptoms with high weight and those marked required in the KB.
+2. red_flags — KB-grounded symptoms/findings that, if present, STRONGLY support or would effectively confirm this condition for triage purposes. Prioritize symptoms with high weight and those marked required in the KB. You may cite relevant risk factors when they are already in the patient log, but symptoms carry more weight for acute triage.
 3. red_flags_present_in_log — Which of those red-flag items are already reflected in the patient log (explicitly or clearly implied).
 4. red_flags_still_to_verify — Red-flag items not yet established in the log.
 5. already_addressed — What is already reasonably clear from the log.
@@ -89,6 +103,97 @@ def lookup_mother_registration(identifiers_json: str) -> str:
         )
     except json.JSONDecodeError as e:
         return _json_error(f"invalid JSON: {e}")
+    except Exception as e:
+        return _json_error(str(e))
+
+
+@tool
+def get_patient_state(
+    rchid: str = "",
+    identifiers_json: str = "",
+    history_limit: int = 20,
+    include_active_clinical: bool = True,
+    conditions_top_k: int = 10,
+) -> str:
+    """Load patient metadata, symptom history, and KB-matched risk signals (decision-support, not diagnosis).
+
+    Provide either ``rchid`` or ``identifiers_json`` (non-empty JSON object with exact registration
+    column filters, e.g. ``{"mobileno": "+91..."}``). Uses the configured patient info source (CSV by default).
+
+    Args:
+        rchid: Mother RCH identifier if known (or from orchestrator context).
+        identifiers_json: JSON object to resolve rchid via mother registration when rchid is empty.
+        history_limit: Max prior symptom analyses (1-100, default 20).
+        include_active_clinical: If True, set ``active_symptoms`` and ``active_conditions`` from merged history.
+        conditions_top_k: Max conditions to rank when computing ``active_conditions`` (1-100).
+
+    Returns:
+        JSON ``PatientState``: metadata, history, identified_risks; optionally active_symptoms and
+        active_conditions; optional ``search_text_preview``.
+    """
+    try:
+        src = get_patient_info_source()
+        rid = str(rchid).strip()
+        if not rid:
+            if not str(identifiers_json).strip():
+                return _json_error("provide rchid or identifiers_json")
+            try:
+                data = json.loads(identifiers_json)
+            except json.JSONDecodeError as e:
+                return _json_error(f"invalid JSON: {e}")
+            if not isinstance(data, dict) or not data:
+                return _json_error("identifiers_json must be a non-empty JSON object")
+            ids = {str(k): str(v) for k, v in data.items()}
+            resolved = src.resolve_rchid(ids)
+            if not resolved:
+                return _json_error("could not resolve rchid from identifiers")
+            rid = resolved
+
+        reg = src.get_registration(rid)
+        if reg is None:
+            reg = {}
+
+        try:
+            lim = int(history_limit)
+        except (TypeError, ValueError):
+            lim = 20
+        lim = max(1, min(lim, 100))
+
+        analyses = src.get_symptom_analyses(rid, limit=lim)
+        lines = build_patient_match_lines(reg, analyses)
+        risks = match_patient_risk_signals(lines)
+        blob = build_patient_search_text(reg, analyses)
+        preview = search_text_preview(blob)
+
+        active_symptoms: list[str] | None = None
+        active_conditions: list[ActiveConditionItem] | None = None
+        if include_active_clinical:
+            try:
+                ctk = int(conditions_top_k)
+            except (TypeError, ValueError):
+                ctk = 10
+            ctk = max(1, min(ctk, 100))
+            syms, cond_tuples = active_clinical_from_history_analyses(
+                analyses,
+                rchid=rid,
+                conditions_top_k=ctk,
+            )
+            active_symptoms = syms
+            active_conditions = [
+                ActiveConditionItem(condition=c, score=s) for c, s in cond_tuples
+            ]
+
+        state = PatientState(
+            metadata=PatientMetadata(rchid=rid, registration=dict(reg)),
+            history=PatientHistory(analyses=analyses, count=len(analyses)),
+            identified_risks=risks,
+            active_symptoms=active_symptoms,
+            active_conditions=active_conditions,
+            search_text_preview=preview,
+        )
+        return state.model_dump_json()
+    except FileNotFoundError as e:
+        return _json_error(str(e))
     except Exception as e:
         return _json_error(str(e))
 
@@ -319,6 +424,7 @@ def consolidate_triage_output(per_condition_plans_json: str) -> str:
 
 TRIAGE_TOOLS = [
     lookup_mother_registration,
+    get_patient_state,
     fetch_patient_symptom_history,
     merge_symptom_log_for_triage,
     rank_conditions_for_symptoms,

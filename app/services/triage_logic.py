@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import csv
 import json
-import re
 from pathlib import Path
 from typing import Any
 
@@ -14,54 +13,77 @@ from app.models.triage import (
     RankedCondition,
     TriageSymptomLog,
 )
+from app.services.text_match import kb_labels_match_patient_lines
+
+_KNOWLEDGE_DIR = Path(__file__).resolve().parent.parent / "data" / "knowledge"
+_TRIAGE_FILE = "medical_conditions_triage.json"
+_SIMPLIFIED_FILE = "medical_conditions_simplified.json"
+
+# Max fraction of (sum of symptom weights) applied as extra score from matched risks.
+_RISK_BONUS_CAP_FRACTION = 0.3
 
 
 def knowledge_path() -> Path:
-    return (
-        Path(__file__).resolve().parent.parent
-        / "data"
-        / "knowledge"
-        / "medical_conditions_simplified.json"
-    )
+    """Path to the primary KB JSON for transcript symptom cataloging.
+
+    Prefers :file:`medical_conditions_triage.json`; falls back to simplified when triage is absent.
+    Ranking always uses :func:`load_conditions_kb` (triage file only).
+    """
+    triage = _KNOWLEDGE_DIR / _TRIAGE_FILE
+    if triage.is_file():
+        return triage
+    return _KNOWLEDGE_DIR / _SIMPLIFIED_FILE
 
 
 def load_conditions_kb() -> list[dict[str, Any]]:
-    path = knowledge_path()
+    """Load triage conditions from :file:`medical_conditions_triage.json` (symptoms, risks, ICD).
+
+    Used by :func:`rank_conditions_for_log`, follow-up planning, and any tool that needs the full
+    obstetric triage KB. Does not fall back to the simplified file.
+    """
+    path = _KNOWLEDGE_DIR / _TRIAGE_FILE
     if not path.is_file():
         return []
     data = json.loads(path.read_text(encoding="utf-8"))
     return list(data.get("conditions", []))
 
 
-def _tokenize(text: str) -> set[str]:
-    return {t for t in re.split(r"[^\w]+", text.lower()) if len(t) > 1}
+def _icd10_match_labels(icd_list: Any) -> list[str]:
+    """Short/long ICD descriptions from triage JSON ``icd10_cm`` entries for text overlap."""
+    labels: list[str] = []
+    if not isinstance(icd_list, list):
+        return labels
+    for icd in icd_list:
+        if not isinstance(icd, dict):
+            continue
+        for key in ("short_description", "long_description"):
+            t = str(icd.get(key) or "").strip()
+            if t:
+                labels.append(t)
+    return labels
 
 
-def _texts_overlap(a: str, b: str) -> bool:
-    a, b = a.lower().strip(), b.lower().strip()
-    if not a or not b:
-        return False
-    if a in b or b in a:
-        return True
-    ta, tb = _tokenize(a), _tokenize(b)
-    if not ta or not tb:
-        return False
-    return bool(ta & tb)
+def _merge_symptom_match_labels(symptom_row: dict[str, Any]) -> list[str]:
+    """Descriptions plus ICD text from ``medical_conditions_triage.json`` symptom rows."""
+    descs = [str(d) for d in (symptom_row.get("descriptions") or []) if d]
+    for t in _icd10_match_labels(symptom_row.get("icd10_cm")):
+        if t not in descs:
+            descs.append(t)
+    return descs
 
 
-def _kb_symptom_matches_patient(
-    ks_name: str,
-    descriptions: list[str],
-    patient_lines: list[tuple[str, bool]],
-) -> tuple[bool, bool]:
-    """Returns (matched, negated) — negated True if match was on a negated patient line."""
-    for pt, is_neg in patient_lines:
-        if _texts_overlap(pt, ks_name):
-            return True, is_neg
-        for d in descriptions:
-            if _texts_overlap(pt, d):
-                return True, is_neg
-    return False, False
+def _merge_risk_match_labels(risk_row: dict[str, Any], rk_name: str) -> list[str]:
+    """Triage JSON risk descriptions + ICD + consolidated patient_risk_signals cues."""
+    from app.services.risk_signals import merged_history_cues_for_risk_name
+
+    descs = [str(d) for d in (risk_row.get("descriptions") or []) if d]
+    for t in _icd10_match_labels(risk_row.get("icd10_cm")):
+        if t not in descs:
+            descs.append(t)
+    for c in merged_history_cues_for_risk_name(rk_name):
+        if c not in descs:
+            descs.append(c)
+    return descs
 
 
 def _patient_match_lines(log: TriageSymptomLog) -> list[tuple[str, bool]]:
@@ -92,7 +114,7 @@ def rank_conditions_for_log(log: TriageSymptomLog, top_k: int = 5) -> ConditionR
     for cond in conditions:
         cname = str(cond.get("name", ""))
         symptoms = cond.get("symptoms") or []
-        score = 0.0
+        symptom_score = 0.0
         matched: list[str] = []
         required_names = [
             str(s.get("name", ""))
@@ -100,19 +122,42 @@ def rank_conditions_for_log(log: TriageSymptomLog, top_k: int = 5) -> ConditionR
             if s.get("required") is True and s.get("name")
         ]
 
+        symptom_weight_sum = 0.0
         for ks in symptoms:
+            if not isinstance(ks, dict):
+                continue
             ks_name = str(ks.get("name", ""))
             if not ks_name:
                 continue
             weight = float(ks.get("weight") or 0.0)
-            descs = [str(d) for d in (ks.get("descriptions") or []) if d]
-            ok, is_neg = _kb_symptom_matches_patient(ks_name, descs, patient_lines)
+            symptom_weight_sum += weight
+            descs = _merge_symptom_match_labels(ks)
+            ok, is_neg = kb_labels_match_patient_lines(ks_name, descs, patient_lines)
             if ok:
                 if is_neg:
-                    score -= 0.35 * weight
+                    symptom_score -= 0.35 * weight
                 else:
-                    score += weight
+                    symptom_score += weight
                     matched.append(ks_name)
+
+        risk_cap = _RISK_BONUS_CAP_FRACTION * symptom_weight_sum
+        risk_raw = 0.0
+        matched_risks: list[str] = []
+        for rk in cond.get("risks") or []:
+            if not isinstance(rk, dict):
+                continue
+            rk_name = str(rk.get("name", ""))
+            if not rk_name:
+                continue
+            weight = float(rk.get("weight") or 0.0)
+            descs = _merge_risk_match_labels(rk, rk_name)
+            ok, is_neg = kb_labels_match_patient_lines(rk_name, descs, patient_lines)
+            if ok and not is_neg:
+                risk_raw += weight
+                matched_risks.append(rk_name)
+
+        risk_bonus = min(risk_raw, risk_cap) if risk_cap > 0 else 0.0
+        score = symptom_score + risk_bonus
 
         missing_req = [r for r in required_names if r not in matched]
         ranked.append(
@@ -120,6 +165,7 @@ def rank_conditions_for_log(log: TriageSymptomLog, top_k: int = 5) -> ConditionR
                 condition=cname,
                 score=round(score, 4),
                 matched_symptoms=list(dict.fromkeys(matched)),
+                matched_risks=list(dict.fromkeys(matched_risks)),
                 missing_required=missing_req,
             )
         )
@@ -276,9 +322,47 @@ def merge_symptom_log_payload(payload: dict[str, Any]) -> TriageSymptomLog:
     return merged
 
 
+def active_clinical_from_history_analyses(
+    analyses: list[dict[str, Any]],
+    *,
+    rchid: str | None = None,
+    conditions_top_k: int = 10,
+) -> tuple[list[str], list[tuple[str, float]]]:
+    """Present (non-negated) symptom names and triage KB conditions with score > 0 from merged history."""
+    if not analyses:
+        return [], []
+    merged = _merge_symptom_dicts([a for a in analyses if isinstance(a, dict)])
+    merged.rchid = rchid
+    active_syms = list(
+        dict.fromkeys(s.name for s in merged.symptoms if s.present and not s.negated)
+    )
+    try:
+        tk = int(conditions_top_k)
+    except (TypeError, ValueError):
+        tk = 10
+    tk = max(1, min(tk, 100))
+    ranked = rank_conditions_for_log(merged, top_k=tk)
+    active_conds = [(r.condition, r.score) for r in ranked.ranked if r.score > 0.0]
+    return active_syms, active_conds
+
+
+def _format_icd_line(prefix: str, icd: dict[str, Any]) -> str:
+    code = icd.get("code", "")
+    short_d = icd.get("short_description", "")
+    long_d = icd.get("long_description", "")
+    role = icd.get("role", "")
+    if long_d and long_d != short_d:
+        return f"  {prefix} {code} ({role}): {short_d} — {long_d}"
+    return f"  {prefix} {code} ({role}): {short_d}"
+
+
 def format_kb_condition_block(cond: dict[str, Any]) -> str:
-    """Human-readable symptom list for LLM prompts."""
+    """Human-readable symptom, risk, and ICD list for LLM prompts."""
     lines = [f"Condition: {cond.get('name', '')}"]
+    for icd in cond.get("icd10_cm") or []:
+        if isinstance(icd, dict):
+            lines.append(_format_icd_line("ICD-10-CM", icd))
+    lines.append("Symptoms:")
     for s in cond.get("symptoms") or []:
         nm = s.get("name", "")
         w = s.get("weight", "")
@@ -288,4 +372,23 @@ def format_kb_condition_block(cond: dict[str, Any]) -> str:
             f"  - {nm} (weight={w}, required={req})"
             + (f" examples: {', '.join(descs)}" if descs else "")
         )
+        for icd in s.get("icd10_cm") or []:
+            if isinstance(icd, dict):
+                lines.append(_format_icd_line("    ICD", icd))
+    risks = cond.get("risks") or []
+    if risks:
+        lines.append("Risk factors (lower weight in scoring; cap applies):")
+        for r in risks:
+            if not isinstance(r, dict):
+                continue
+            nm = r.get("name", "")
+            w = r.get("weight", "")
+            descs = r.get("descriptions") or []
+            lines.append(
+                f"  - {nm} (weight={w})"
+                + (f" examples: {', '.join(descs)}" if descs else "")
+            )
+            for icd in r.get("icd10_cm") or []:
+                if isinstance(icd, dict):
+                    lines.append(_format_icd_line("    ICD", icd))
     return "\n".join(lines)

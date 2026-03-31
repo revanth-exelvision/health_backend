@@ -1,5 +1,6 @@
 import json
 import unittest
+from unittest.mock import MagicMock, patch
 
 from app.models.triage import MergedSymptomLine, TriageSymptomLog
 from app.services.triage_logic import merge_symptom_log_payload, rank_conditions_for_log
@@ -55,6 +56,76 @@ class TestTriageRanking(unittest.TestCase):
         result = rank_conditions_for_log(log, top_k=5)
         names = [r.condition for r in result.ranked[:3]]
         self.assertIn("Infections", names)
+
+
+class TestRiskBonusScoring(unittest.TestCase):
+    @patch("app.services.triage_logic.load_conditions_kb")
+    def test_matched_risk_adds_capped_bonus(self, mock_load: MagicMock) -> None:
+        mock_load.return_value = [
+            {
+                "name": "TestCondition",
+                "symptoms": [
+                    {
+                        "name": "AlphaSymptom",
+                        "weight": 1.0,
+                        "required": False,
+                        "descriptions": [],
+                    }
+                ],
+                "risks": [
+                    {
+                        "name": "RiskOne",
+                        "weight": 0.5,
+                        "descriptions": ["triggerphrase"],
+                    },
+                    {
+                        "name": "RiskTwo",
+                        "weight": 0.5,
+                        "descriptions": ["othertrigger"],
+                    },
+                ],
+            }
+        ]
+        log = TriageSymptomLog(
+            symptoms=[
+                MergedSymptomLine(name="AlphaSymptom", present=True, negated=False),
+            ],
+            chief_complaint="triggerphrase othertrigger",
+        )
+        result = rank_conditions_for_log(log, top_k=5)
+        row = result.ranked[0]
+        self.assertEqual(row.condition, "TestCondition")
+        # symptom 1.0 + risk cap 0.3 * 1.0 = 0.3 (raw risk 1.0 capped)
+        self.assertAlmostEqual(row.score, 1.3, places=4)
+        self.assertIn("RiskOne", row.matched_risks)
+        self.assertIn("RiskTwo", row.matched_risks)
+
+    @patch("app.services.triage_logic.load_conditions_kb")
+    def test_risk_only_never_exceeds_cap(self, mock_load: MagicMock) -> None:
+        mock_load.return_value = [
+            {
+                "name": "RiskOnly",
+                "symptoms": [
+                    {
+                        "name": "Quiet",
+                        "weight": 0.2,
+                        "required": False,
+                        "descriptions": [],
+                    }
+                ],
+                "risks": [
+                    {"name": "BigRisk", "weight": 2.0, "descriptions": ["foundme"]},
+                ],
+            }
+        ]
+        log = TriageSymptomLog(
+            symptoms=[],
+            chief_complaint="foundme",
+        )
+        result = rank_conditions_for_log(log, top_k=5)
+        row = next(r for r in result.ranked if r.condition == "RiskOnly")
+        # cap = 0.3 * 0.2 = 0.06; raw risk 2.0 -> bonus 0.06
+        self.assertAlmostEqual(row.score, 0.06, places=4)
 
 
 class TestTriageToolsSmoke(unittest.TestCase):

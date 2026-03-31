@@ -60,4 +60,5 @@ pip-log.txt
 
 
 # Project specific files
-data/
+app/data/medical_data/
+scraping/

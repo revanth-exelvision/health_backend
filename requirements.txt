@@ -1,0 +1,11 @@
+# Runtime dependencies for the FastAPI app (`app/`).
+# Orchestrator (install same as: pip install "git+https://github.com/revanth-exelvision/orchestratorv2.git")
+
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2
+langchain>=0.3
+langchain-core>=0.3
+langchain-openai>=0.2
+
+git+https://github.com/revanth-exelvision/orchestratorv2.git
