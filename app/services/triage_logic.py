@@ -14,6 +14,9 @@ from app.models.triage import (
     TriageSymptomLog,
 )
 from app.services.text_match import kb_labels_match_patient_lines
+from orchestrator.logging_setup import get_logger
+
+logger = get_logger(__name__)
 
 _KNOWLEDGE_DIR = Path(__file__).resolve().parent.parent / "data" / "knowledge"
 _TRIAGE_FILE = "medical_conditions_triage.json"
@@ -283,6 +286,9 @@ def fetch_symptom_analyses_for_rchid(rchid: str, limit: int = 20) -> list[dict[s
         try:
             out.append(json.loads(raw))
         except json.JSONDecodeError:
+            logger.warning(
+                "fetch_symptom_analyses_for_rchid: skipping row with invalid structured_output_json"
+            )
             continue
     return out
 

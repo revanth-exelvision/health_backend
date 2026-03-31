@@ -11,11 +11,15 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from app.models.transcript import TranscriptSymptomAnalysis
 from app.services.triage_logic import knowledge_path
 from orchestrator.llm.factory import get_chat_model
+from orchestrator.logging_setup import get_logger
+
+logger = get_logger(__name__)
 
 
 def _load_symptom_catalog_text() -> str:
     path = knowledge_path()
     if not path.is_file():
+        logger.warning("symptom catalog file missing at %s", path)
         return "(no knowledge file)"
     data = json.loads(path.read_text(encoding="utf-8"))
     lines: list[str] = []
@@ -90,6 +94,7 @@ def analyze_transcript_symptoms(transcript: str) -> str:
             payload = dict(out) if isinstance(out, dict) else {"raw": str(out)}
         return json.dumps(payload, ensure_ascii=False)
     except Exception as e:
+        logger.exception("analyze_transcript_symptoms failed")
         return json.dumps({"error": str(e)}, ensure_ascii=False)
 
 

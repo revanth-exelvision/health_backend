@@ -16,6 +16,9 @@ import os
 from pathlib import Path
 
 from langchain.tools import tool
+from orchestrator.logging_setup import get_logger
+
+logger = get_logger(__name__)
 
 # Max rows returned by query_csv_rows to keep tool output bounded.
 _MAX_QUERY_ROWS = 500
@@ -115,6 +118,7 @@ def query_csv_rows(relative_path: str, filters_json: str) -> str:
             }
         )
     except Exception as e:
+        logger.exception("query_csv_rows failed path=%s", relative_path)
         return _json_response({"error": str(e)})
 
 
@@ -153,6 +157,7 @@ def append_csv_row(relative_path: str, row_json: str) -> str:
             writer.writerow({k: str_data.get(k, "") for k in fieldnames})
         return _json_response({"ok": True, "appended": True, "created": False})
     except Exception as e:
+        logger.exception("append_csv_row failed path=%s", relative_path)
         return _json_response({"error": str(e)})
 
 
@@ -203,8 +208,9 @@ def upsert_csv_row(
         rows.append(new_row)
         _write_csv_dicts(path, fieldnames, rows)
         return _json_response({"ok": True, "action": "inserted", "key_column": key_column})
-    except Exception as e:
-        return _json_response({"error": str(e)})
+    except Exception:
+        logger.exception("upsert_csv_row failed path=%s", relative_path)
+        return _json_response({"error": "internal error"})
 
 
 CSV_TOOLS = [query_csv_rows, append_csv_row, upsert_csv_row]

@@ -2,9 +2,13 @@
 from orchestrator.flow_registry import DEFAULT_FLOWS
 from orchestrator.main import create_app
 from orchestrator.models import OrchestratorPlan, PlanStep
+from orchestrator.logging_setup import configure_logging, get_logger
 from orchestrator.tools import DEFAULT_TOOLS
 
 from app.tools import HEALTH_TOOLS
+
+configure_logging()
+logger = get_logger(__name__)
 
 
 my_flows = {
@@ -102,6 +106,11 @@ my_flows = {
         ),
     ),
 }
+
+logger.info(
+    "health_backend: registering named flows %s",
+    ", ".join(sorted(my_flows.keys())),
+)
 
 app = create_app(
     tools=[*HEALTH_TOOLS],

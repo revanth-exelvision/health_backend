@@ -37,6 +37,9 @@ from app.services.triage_logic import (
     rank_conditions_for_log,
 )
 from orchestrator.llm.factory import get_chat_model
+from orchestrator.logging_setup import get_logger
+
+logger = get_logger(__name__)
 
 _PLAN_SYSTEM = """You are a clinical decision-support assistant for obstetric triage. You are not a diagnosing physician.
 
@@ -102,8 +105,10 @@ def lookup_mother_registration(identifiers_json: str) -> str:
             }
         )
     except json.JSONDecodeError as e:
+        logger.warning("lookup_mother_registration: invalid identifiers_json: %s", e)
         return _json_error(f"invalid JSON: {e}")
     except Exception as e:
+        logger.exception("lookup_mother_registration failed")
         return _json_error(str(e))
 
 
@@ -140,6 +145,7 @@ def get_patient_state(
             try:
                 data = json.loads(identifiers_json)
             except json.JSONDecodeError as e:
+                logger.warning("get_patient_state: invalid identifiers_json: %s", e)
                 return _json_error(f"invalid JSON: {e}")
             if not isinstance(data, dict) or not data:
                 return _json_error("identifiers_json must be a non-empty JSON object")
@@ -193,8 +199,10 @@ def get_patient_state(
         )
         return state.model_dump_json()
     except FileNotFoundError as e:
+        logger.warning("get_patient_state: data file missing: %s", e)
         return _json_error(str(e))
     except Exception as e:
+        logger.exception("get_patient_state failed")
         return _json_error(str(e))
 
 
@@ -228,6 +236,7 @@ def fetch_patient_symptom_history(rchid: str, limit: int = 20) -> str:
             ensure_ascii=False,
         )
     except Exception as e:
+        logger.exception("fetch_patient_symptom_history failed")
         return _json_error(str(e))
 
 
@@ -255,8 +264,10 @@ def merge_symptom_log_for_triage(payload_json: str) -> str:
         log = merge_symptom_log_payload(payload)
         return log.model_dump_json()
     except json.JSONDecodeError as e:
+        logger.warning("merge_symptom_log_for_triage: invalid payload_json: %s", e)
         return _json_error(f"invalid JSON: {e}")
     except Exception as e:
+        logger.exception("merge_symptom_log_for_triage failed")
         return _json_error(str(e))
 
 
@@ -282,6 +293,7 @@ def rank_conditions_for_symptoms(canonical_symptom_log_json: str, top_k: int = 5
         result = rank_conditions_for_log(log, top_k=k)
         return result.model_dump_json()
     except Exception as e:
+        logger.exception("rank_conditions_for_symptoms failed")
         return _json_error(str(e))
 
 
@@ -323,6 +335,9 @@ def plan_followups_per_condition(
         if not to_eval:
             to_eval = ranked.ranked[: min(3, len(ranked.ranked))]
 
+        logger.info(
+            "plan_followups_per_condition: evaluating %d condition(s)", len(to_eval)
+        )
         llm = get_chat_model()
         structured = llm.with_structured_output(PerConditionTriagePlan)
         plans: list[PerConditionTriagePlan] = []
@@ -371,9 +386,11 @@ def plan_followups_per_condition(
         bundle = PerConditionPlansBundle(per_condition=plans)
         return bundle.model_dump_json()
     except json.JSONDecodeError as e:
+        logger.warning("plan_followups_per_condition: invalid JSON: %s", e)
         return _json_error(f"invalid JSON: {e}")
-    except Exception as e:
-        return _json_error(str(e))
+    except Exception:
+        logger.exception("plan_followups_per_condition failed")
+        return _json_error("internal error")
 
 
 @tool
@@ -410,6 +427,7 @@ def consolidate_triage_output(per_condition_plans_json: str) -> str:
             "headings, or condition-name prefixes on individual items."
         )
         msg = [SystemMessage(content=_CONSOLIDATE_SYSTEM), HumanMessage(content=human)]
+        logger.info("consolidate_triage_output: invoking consolidation model")
         out: Any = structured.invoke(msg)
         if isinstance(out, TriageConsolidation):
             return out.model_dump_json()
@@ -417,8 +435,10 @@ def consolidate_triage_output(per_condition_plans_json: str) -> str:
             return json.dumps(out, ensure_ascii=False)
         return _json_error("unexpected consolidation model output")
     except json.JSONDecodeError as e:
+        logger.warning("consolidate_triage_output: invalid JSON: %s", e)
         return _json_error(f"invalid JSON: {e}")
     except Exception as e:
+        logger.exception("consolidate_triage_output failed")
         return _json_error(str(e))
 
 
